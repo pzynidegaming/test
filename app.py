@@ -1,12 +1,8 @@
 import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-# Ignore these types when hashing.
-st.experimental_hash_funcs(
-    {AutoModelForCausalLM: lambda _: None, AutoTokenizer: lambda _: None}
-)
+@st.cache(hash_funcs={pipeline: lambda _: None})
 
-@st.cache(allow_output_mutation=True)
 def load_model():
     model_id = "RWKV/rwkv-raven-1b5"
     model = AutoModelForCausalLM.from_pretrained(model_id)
