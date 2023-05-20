@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 
 def load_model():
-    model_id = "RWKV/rwkv-4-169m-pile"
+    model_id = "RWKV/rwkv-4-1b5-pile"
     model = AutoModelForCausalLM.from_pretrained(model_id)
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     return model, tokenizer
