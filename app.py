@@ -1,7 +1,6 @@
 import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-@st.cache(hash_funcs={pipeline: lambda _: None})
 
 def load_model():
     model_id = "RWKV/rwkv-raven-1b5"
