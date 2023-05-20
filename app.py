@@ -1,33 +1,40 @@
+
+# Import necessary libraries
 import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-# Ignore these types when hashing.
-st.experimental_hash_funcs(
-    {AutoModelForCausalLM: lambda _: None, AutoTokenizer: lambda _: None}
-)
+# Set model id
+model_id = "RWKV/rwkv-raven-1b5"
 
-@st.cache(allow_output_mutation=True)
-def load_model():
-    model_id = "RWKV/rwkv-raven-1b5"
-    model = AutoModelForCausalLM.from_pretrained(model_id)
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
-    return model, tokenizer
+# Load pre-trained model and tokenizer
+model = AutoModelForCausalLM.from_pretrained(model_id)
+tokenizer = AutoTokenizer.from_pretrained(model_id)
 
 def generate_story(characters, age, moral):
-    model, tokenizer = load_model()
-    question = f"Write a story about {characters} for an audience aged {age} with the moral {moral}"
-    prompt = f"### Instruction: {question}\n### Response:"
-    
+    # Combine the inputs into a prompt for the model
+    prompt = f"### Instruction: A story about {characters}, for an audience around {age} years old, with a moral that {moral}.\n### Response:"
+
     inputs = tokenizer(prompt, return_tensors="pt")
-    output = model.generate(inputs["input_ids"], max_length=500, do_sample=True, temperature=0.7)
+    output = model.generate(inputs["input_ids"], max_length=500, temperature=0.9)
 
-    return tokenizer.decode(output[0], skip_special_tokens=True)
+    # Return the generated story
+    return tokenizer.decode(output[0].tolist(), skip_special_tokens=True)
 
-st.title('Story Writer App')
-characters = st.text_input("Enter the characters for the story")
-age = st.slider("Select the age of the audience", 5, 18, 10)
-moral = st.text_input("Enter the moral of the story")
+# Define Streamlit structure
+def main():
+    st.title("Story Writer App")
+    
+    # Take inputs from the user
+    characters = st.text_input("Enter the characters for the story")
+    age = st.slider("Select the age of the audience", 1, 100, 25)
+    moral = st.text_input("Enter the moral of the story")
 
-if st.button('Generate Story'):
-    story = generate_story(characters, age, moral)
-    st.text(story)
+    if st.button("Generate Story"):
+        # Generate the story
+        story = generate_story(characters, age, moral)
+
+        # Display the generated story
+        st.text(story)
+
+if __name__ == '__main__':
+    main()
