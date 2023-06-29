@@ -24,5 +24,5 @@ age = st.slider("Select the age of the audience", 5, 18, 10)
 moral = st.text_input("Enter the moral of the story")
 
 if st.button('Generate Story'):
-    story = generate_story(characters, age, moral)
-    st.text(story)
+    #story = generate_story(characters, age, moral)
+    st.text("test")
